@@ -24,7 +24,7 @@ module.exports = {
                 throw new Error(data.message);
             }
         } catch (error) {
-            console.log("잡힌 에러는", error.message);
+            console.log("api 호출 에러 발생 : ", error.message);
         }
     },
 };

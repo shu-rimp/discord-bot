@@ -7,22 +7,22 @@ module.exports = {
         const buttons = [
             {
                 customId: "previousPage",
-                label: "◀ 이전페이지",
+                label: "이전페이지",
                 style: "SUCCESS",
             },
             {
                 customId: "nextPage",
-                label: "▶ 다음페이지",
+                label: "다음페이지",
                 style: "SUCCESS",
             },
-            {
-                customId: "save",
-                label: "⭐ 찜하기",
-                style: "PRIMARY",
-            },
+            // {
+            //     customId: "save",
+            //     label: "⭐ 찜하기",
+            //     style: "PRIMARY",
+            // },
             {
                 customId: "quit",
-                label: "❌ 검색종료",
+                label: "검색종료",
                 style: "DANGER",
             },
         ];

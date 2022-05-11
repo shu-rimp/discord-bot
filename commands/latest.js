@@ -1,5 +1,4 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
-const { MessageEmbed, MessageActionRow, MessageSelectMenu, MessageButton } = require("discord.js");
 const wait = require('node:timers/promises').setTimeout;
 
 module.exports = {
@@ -10,134 +9,80 @@ module.exports = {
         .addStringOption((option) => option.setName("키워드").setDescription("키워드를 입력하새우.").setRequired(true)),
 
     async execute(interaction) {
-        const rt = require("../functions/removeTags.js");
         const gn = require("../functions/getNews.js");
         const gsm = require("../functions/getSelectMenus.js");
         const ge = require("../functions/getEmbed.js");
         const gb = require("../functions/getButton.js");
         
+        
         let selectedValue = 0;
         let pageNum = 0;
-
+        
         const keyword = interaction.options.getString("키워드");
         // let startNum = 1;
-
-        await interaction.deferReply();
-
+        
+        
+        console.log("토큰 아이디 : ", interaction.token);
+        
         let data = await gn.getNews(keyword); // api call
-
-        if (data.total != 0) {
-            // select menus area
-            let row = await gsm.getSelectMenus(data, 0);
+        
+        if (data.total >= 100) {
             
-            // new MessageActionRow().addComponents(
-            //     new MessageSelectMenu()
-            //         .setCustomId("select")
-            //         .setPlaceholder("뉴스기사를 선택해주세요.")
-            //         .addOptions([
-            //             {
-            //                 label: rt.removeTags(data.items[0].title),
-            //                 description: "This is a description",
-            //                 value: "0",
-            //             },
-            //             {
-            //                 label: rt.removeTags(data.items[1].title),
-            //                 description: "This is also a description",
-            //                 value: "1",
-            //             },
-            //             {
-            //                 label: rt.removeTags(data.items[2].title),
-            //                 description: "This is also a description",
-            //                 value: "2",
-            //             },
-            //             {
-            //                 label: rt.removeTags(data.items[3].title),
-            //                 description: "This is also a description",
-            //                 value: "3",
-            //             },
-            //             {
-            //                 label: rt.removeTags(data.items[4].title),
-            //                 description: "This is also a description",
-            //                 value: "4",
-            //             },
-            //             {
-            //                 label: rt.removeTags(data.items[5].title),
-            //                 description: "This is also a description",
-            //                 value: "5",
-            //             },
-            //             {
-            //                 label: rt.removeTags(data.items[6].title),
-            //                 description: "This is also a description",
-            //                 value: "6",
-            //             },
-            //             {
-            //                 label: rt.removeTags(data.items[7].title),
-            //                 description: "This is also a description",
-            //                 value: "7",
-            //             },
-            //             {
-            //                 label: rt.removeTags(data.items[8].title),
-            //                 description: "This is also a description",
-            //                 value: "8",
-            //             },
-            //             {
-            //                 label: rt.removeTags(data.items[9].title),
-            //                 description: "This is also a description",
-            //                 value: "9",
-            //             },
-            //         ]) // MessageSelectMenu
-            // ); // end of row
-
-            // const buttons = [
-            //     {
-            //         customId: "previousPage",
-            //         label: "◀ 이전페이지",
-            //         style: "SUCCESS",
-            //     },
-            //     {
-            //         customId: "nextPage",
-            //         label: "▶ 다음페이지",
-            //         style: "SUCCESS",
-            //     },
-            //     {
-            //         customId: "save",
-            //         label: "⭐ 찜하기",
-            //         style: "PRIMARY",
-            //     },
-            //     {
-            //         customId: "quit",
-            //         label: "❌ 검색종료",
-            //         style: "DANGER",
-            //     },
-            // ];
-
-            const row2 = await gb.getButton();
+            let row = await gsm.getSelectMenus(data, 0);    // 메뉴생성
+            const row2 = await gb.getButton();              // 버튼생성
             
-            // new MessageActionRow().addComponents(
-            //     buttons.map((button) => {
-            //         return new MessageButton()
-            //             .setCustomId(button.customId)
-            //             .setLabel(button.label)
-            //             .setStyle(button.style)
-            //     })
-            // );
+            // default embed area
+            let embed = await ge.getEmbed(data, selectedValue, pageNum);
+            await interaction.reply({
+                content: ":mag: `" + keyword + "` 로 검색한 결과입니다.",
+                embeds: [embed],
+                components: [row, row2],
+                ephemeral: true
+            });
 
-            // get selected value area
+            // 메뉴, 버튼 클릭 하면 true 반환
             const filter = (interaction) => {
-                if (interaction.customId === "select" || "previousPage" || "nextPage" || "save" || "quit") {
+                if (interaction.customId === "select" || "previousPage" || "nextPage" || "quit") {
                     return true;
                 }
             };
             
-            const collector = interaction.channel.createMessageComponentCollector({
+            const collector = await interaction.channel.createMessageComponentCollector({
                 filter,
-                // time: 60 * 1000,
+                time: 60 * 1000,
             });
             
-            collector.on("collect", async (interaction) => {
-
+            await collector.on("collect", async (interaction) => {
+                
                 if ((await interaction.customId) === "nextPage") {
+                    if(pageNum >= 90) {
+                        await interaction.reply( { content : "마지막 페이지 입니다.", ephemeral: true });
+                        // await wait(2000);
+                        // await interaction.deleteReply();
+
+                        pageNum = 90;
+
+                        return;
+                    }
+
                     pageNum += 10;
+                    selectedValue = pageNum;
+
+                    console.log('pageNum = ', pageNum);
+                    console.log('selectedValue = ', selectedValue);
+                }
+
+                if ((await interaction.customId) === "previousPage") {
+                    if(pageNum <= 0) {
+                        await interaction.reply( { content : "첫번째 페이지 입니다.", ephemeral: true });
+                        // await wait(2000);
+                        // await interaction.deleteReply();
+
+                        pageNum = 0;
+                        return;
+                    }
+
+                    pageNum -= 10;
                     selectedValue = pageNum;
 
                     console.log('pageNum = ', pageNum);
@@ -148,133 +93,62 @@ module.exports = {
                     selectedValue = parseInt(interaction.values[0]) + pageNum;
                     console.log(selectedValue);
 
-                    // selectedValue = pageNum;
-                }
-                if (await interaction.customId === 'quit') {
-                    await wait(4000);
-                    await interaction.update({ content: '검색을 종료합니다.', embed: [], components: [] });
                 }
 
-                embed = await ge.getEmbed(data, selectedValue);
-                
-                // new MessageEmbed()
-                //     .setColor("#2DB400")
-                //     .setTitle(rt.removeTags(data.items[selectedValue].title))
-                //     .setURL(data.items[selectedValue].link)
-                //     .addFields({
-                //         name: "ㅤ",
-                //         value: rt.removeTags(data.items[selectedValue].description),
-                //     })
-                //     .setFooter({
-                //         text: "Published :: " + data.items[selectedValue].pubDate,
-                //     });
+                try {
+                    if (await interaction.customId === 'quit') {
+                        embed = await ge.getQuitEmbed();
+                        await interaction.update({ 
+                            content: ' ',
+                            embeds: [embed], 
+                            components: [] });
+                        await wait(2000);
+                        // await interaction.deleteReply();
+                        
+                        collector.stop();
+                        
+                        return;
+                    }
+                    
+                } catch(error) {
+                    console.error(error)
+                    
+                    collector.stop();
+                }
 
+                embed = await ge.getEmbed(data, selectedValue, pageNum);
                 row = await gsm.getSelectMenus(data, pageNum);
-                // new MessageActionRow().addComponents(
-                //     new MessageSelectMenu()
-                //         .setCustomId("select")
-                //         .setPlaceholder("뉴스기사를 선택해주세요.")
-                //         .addOptions([
-                //             {
-                //                 label: rt.removeTags(data.items[pageNum].title),
-                //                 description: "This is a description",
-                //                 value: "0",
-                //             },
-                //             {
-                //                 label: rt.removeTags(data.items[pageNum + 1].title),
-                //                 description: "This is also a description",
-                //                 value: "1",
-                //             },
-                //             {
-                //                 label: rt.removeTags(data.items[pageNum + 2].title),
-                //                 description: "This is also a description",
-                //                 value: "2",
-                //             },
-                //             {
-                //                 label: rt.removeTags(data.items[pageNum + 3].title),
-                //                 description: "This is also a description",
-                //                 value: "3",
-                //             },
-                //             {
-                //                 label: rt.removeTags(data.items[pageNum + 4].title),
-                //                 description: "This is also a description",
-                //                 value: "4",
-                //             },
-                //             {
-                //                 label: rt.removeTags(data.items[pageNum + 5].title),
-                //                 description: "This is also a description",
-                //                 value: "5",
-                //             },
-                //             {
-                //                 label: rt.removeTags(data.items[pageNum + 6].title),
-                //                 description: "This is also a description",
-                //                 value: "6",
-                //             },
-                //             {
-                //                 label: rt.removeTags(data.items[pageNum + 7].title),
-                //                 description: "This is also a description",
-                //                 value: "7",
-                //             },
-                //             {
-                //                 label: rt.removeTags(data.items[pageNum + 8].title),
-                //                 description: "This is also a description",
-                //                 value: "8",
-                //             },
-                //             {
-                //                 label: rt.removeTags(data.items[pageNum + 9].title),
-                //                 description: "This is also a description",
-                //                 value: "9",
-                //             },
-                //         ]) // MessageSelectMenu
-                // ); // end of row
+                
+                try {
+                    // await interaction.deferUpdate();
+                    await interaction.update({
+                        content: ":mag: `" + keyword + "` 로 검색한 결과입니다.",
+                        embeds: [embed],
+                        components: [row, row2],
+                    });
+                    
+                } catch(error) {
 
-                await interaction.update({
-                    content: ":mag: `" + keyword + "` 로 검색한 결과입니다.",
-                    embeds: [embed],
-                    components: [row, row2],
-                });
-                // }
+                    await interaction.channel.send('상호작용 실패. 다시 시도해주세요')
+                        .then(msg => {
+                            wait(2000);
+                            msg.delete({ timeout: 200000 /*time unitl delete in milliseconds*/});
+                        });
+                    
+                    collector.stop();
+                }
+                
             }); // end of collector
 
-            // default embed area
-            let embed = await ge.getEmbed(data, selectedValue);
-            // new MessageEmbed()
-            //     .setColor("#2DB400")
-            //     .setTitle(rt.removeTags(data.items[0].title))
-            //     .setURL(data.items[0].link)
-            //     // .setAuthor({ name : "`" + keyword + "` 로 검색한 결과입니다."})
-            //     .addFields({
-            //         name: "ㅤ",
-            //         value: rt.removeTags(data.items[0].description),
-            //     })
-            //     .setFooter({
-            //         text: "Published :: " + data.items[0].pubDate,
-            //     });
-
-            await interaction.editReply({
-                content: ":mag: `" + keyword + "` 로 검색한 결과입니다.",
-                embeds: [embed],
-                components: [row, row2],
-            });
         } else {
             // error(no result matches) handling area
             const embed = await ge.getErrorEmbed(keyword);
-            // new MessageEmbed()
-            //     .setColor("#EF5350")
-            //     .setTitle(":warning: 이런! 새우가 길을 잃었네요...")
-            //     .setThumbnail(
-            //         "https://w.namu.la/s/4c27296bd851d7b269203ec98248c5d5a4d7d1bc430c3d2ef225d29d69979d47efb449009f6eeecd4789a192dd089660f0be23c680024acade9eba25341e3545960dc249d9e9c7754e7203a4301ec77d"
-            //     )
-            //     .addFields({
-            //         name: "검색결과를 찾을 수 없습니다.",
-            //         value: "입력한 키워드 : `" + keyword + "`",
-            //     })
-            //     .setFooter({
-            //         text: "올바른 키워드를 입력했나요?",
-            //         iconURL: "https://images.emojiterra.com/twitter/v13.1/512px/1f50d.png",
-            //     });
 
-            await interaction.editReply({ embeds: [embed] });
+            await interaction.reply({ embeds: [embed] });
+            await wait(4000)
+            await interaction.deleteReply();
         } // if-else
+
+
     }, // end of execute
 }; // module.exports

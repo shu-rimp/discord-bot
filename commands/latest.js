@@ -33,23 +33,34 @@ module.exports = {
             
             // default embed area
             let embed = await ge.getEmbed(data, selectedValue, pageNum);
-            await interaction.reply({
+            await interaction.deferReply();
+            await interaction.editReply({
                 content: ":mag: `" + keyword + "` 로 검색한 결과입니다.",
                 embeds: [embed],
                 components: [row, row2],
-                ephemeral: true
             });
+            const message = await interaction.fetchReply();
 
             // 메뉴, 버튼 클릭 하면 true 반환
-            const filter = (interaction) => {
-                if (interaction.customId === "select" || "previousPage" || "nextPage" || "quit") {
+            const filter = (i) => {
+                if ( (i.customId === "select" || "previousPage" || "nextPage" || "quit") 
+                    && (i.user.id === interaction.user.id) ) {
                     return true;
                 }
             };
             
-            const collector = await interaction.channel.createMessageComponentCollector({
+            // const filter = i => {
+            //     i.deferUpdate();
+                
+            //     console.log(i.user.id === interaction.user.id);
+            //     return i.user.id === interaction.user.id
+            // };
+
+            const collector = await message.createMessageComponentCollector({
+            // const collector = await msg.createMessageComponentCollector({
                 filter,
                 time: 60 * 1000,
+                maxProcessed: 1
             });
             
             await collector.on("collect", async (interaction) => {
@@ -98,14 +109,15 @@ module.exports = {
                 try {
                     if (await interaction.customId === 'quit') {
                         embed = await ge.getQuitEmbed();
-                        await interaction.update({ 
+                        await interaction.deferUpdate();
+                        await interaction.editReply({ 
                             content: ' ',
                             embeds: [embed], 
                             components: [] });
                         await wait(2000);
-                        // await interaction.deleteReply();
+                        await interaction.deleteReply();
                         
-                        collector.stop();
+                        await collector.stop();
                         
                         return;
                     }
@@ -118,26 +130,23 @@ module.exports = {
 
                 embed = await ge.getEmbed(data, selectedValue, pageNum);
                 row = await gsm.getSelectMenus(data, pageNum);
+                console.log("get new embeds success");
                 
                 try {
-                    // await interaction.deferUpdate();
-                    await interaction.update({
+                    await interaction.deferUpdate();
+                    await interaction.editReply({
                         content: ":mag: `" + keyword + "` 로 검색한 결과입니다.",
                         embeds: [embed],
                         components: [row, row2],
                     });
                     
                 } catch(error) {
+    
+                    console.log(error);
+                    await interaction.channel.send('상호작용 실패. 검색 종료 후 다시 시도해주세요');
 
-                    await interaction.channel.send('상호작용 실패. 다시 시도해주세요')
-                        .then(msg => {
-                            wait(2000);
-                            msg.delete({ timeout: 200000 /*time unitl delete in milliseconds*/});
-                        });
-                    
-                    collector.stop();
+                    await collector.stop();
                 }
-                
             }); // end of collector
 
         } else {

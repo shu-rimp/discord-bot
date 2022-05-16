@@ -9,11 +9,13 @@ module.exports = {
                 customId: "previousPage",
                 label: "이전페이지",
                 style: "SUCCESS",
+                emoji: "<:Rocket:960965476673019954>"
             },
             {
                 customId: "nextPage",
                 label: "다음페이지",
                 style: "SUCCESS",
+                emoji: "<:Rocket:960965476673019954>"
             },
             // {
             //     customId: "save",
@@ -24,6 +26,7 @@ module.exports = {
                 customId: "quit",
                 label: "검색종료",
                 style: "DANGER",
+                emoji: "<:Rocket:960965476673019954>" 
             },
         ];
 
@@ -33,6 +36,7 @@ module.exports = {
                     .setCustomId(button.customId)
                     .setLabel(button.label)
                     .setStyle(button.style)
+                    .setEmoji(button.emoji)
             })
         );
     }

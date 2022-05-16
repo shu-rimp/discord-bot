@@ -43,7 +43,7 @@ client.on('interactionCreate', async interaction => {
 		await command.execute(interaction);
 	} catch (error) {
 		console.error(error);
-		await interaction.reply({ content: '봇이 응답하지 않았습니다. 다시 시도해주세요.', ephemeral: true });
+		await interaction.channel.send({ content: '봇이 응답하지 않았습니다. 다시 시도해주세요.', ephemeral: true });
 	}
 });
 

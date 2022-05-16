@@ -1,4 +1,5 @@
 module.exports = {
+    
     getSelectMenus : async function(data, pageNum) {
         const { MessageActionRow, MessageSelectMenu } = require("discord.js");
         const rt = require("./removeTags.js");
@@ -63,5 +64,4 @@ module.exports = {
         ); // end of row
 
     } // getSelectMenus
-
 } // module.exports

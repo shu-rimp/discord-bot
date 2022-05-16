@@ -1,4 +1,5 @@
 module.exports = {
+
     getNews : async function(keyword) {
         const fetch = require("node-fetch");
         const { Naver_Client_Id, Naver_Client_Secret } = require('../config.json');
@@ -26,5 +27,6 @@ module.exports = {
         } catch (error) {
             console.log("api 호출 에러 발생 : ", error.message);
         }
-    },
-};
+    }, // getNews
+    
+}; // module.exports

@@ -1,4 +1,5 @@
 module.exports = {
+
     removeTags : function(text) {
         text = text
             .replace(/<(\/)?([a-zA-Z]*)(\s[a-zA-Z]*=[^>]*)?(\s)*(\/)?>/ig, "")
@@ -11,10 +12,6 @@ module.exports = {
             .replace(/(&#039\;)/g, "\'");
         
         return text;
-    },
+    }, // removeTags
 
-    trim : function(str, max) {
-        (str.length > max ? `${str.slice(0, max - 3)}...` : str);
-
-    }
-};
+}; // module.exports

@@ -9,10 +9,10 @@ module.exports = {
         data.items[selectedValue].pubDate = data.items[selectedValue].pubDate.replace("+0900", "");
 
         return new MessageEmbed()
-            .setColor("#2DB400")
+            .setColor("#12d8b5")
             .setTitle(rt.removeTags(data.items[selectedValue].title))
             .setURL(data.items[selectedValue].link)
-            .setThumbnail("https://cdn.discordapp.com/attachments/973929274744643595/973929352402190356/-001_5.png")
+            .setThumbnail("https://cdn.discordapp.com/attachments/973929274744643595/976097698698657832/logo.png")
             .addFields({
                 name: "ㅤ",
                 value: rt.removeTags(data.items[selectedValue].description),
@@ -43,11 +43,11 @@ module.exports = {
         const { MessageEmbed } = require("discord.js");
 
         return new MessageEmbed()
-            .setColor("#2DB400")
+            .setColor("#12d8b5")
             .setTitle("새우 이용안내")
             .addFields({
                 name: "ㅤ",
-                value: "`/뉴스검색 [키워드]`\n입력한 키워드로 뉴스를 검색합니다.\n키워드가 포함된 100개의 최신 뉴스를 보여줍니다.\n메뉴를 통해 원하는 기사를 선택하세요.\n클릭하면 뉴스 전문으로 이동합니다.",
+                value: "`/뉴스검색 [키워드]`\n입력한 키워드로 뉴스를 검색합니다.\n키워드가 포함된 100개의 최신 뉴스를 보여줍니다.\n메뉴를 통해 원하는 기사를 선택하세요.\n제목을 클릭하면 뉴스 전문으로 이동합니다.",
             })
             .addFields({
                 name: "ㅤ",
@@ -55,15 +55,16 @@ module.exports = {
             })
             .addFields({
                 name: "ㅤ",
-                value: "`X (검색종료)`\n검색창을 닫습니다. 자동으로 메시지의 내용이 삭제됩니다."
+                value: "`X (검색종료)`\n검색창을 닫습니다. 자동으로 삭제됩니다."
             })
             .addFields({
                 name: "ㅤ",
-                value: "검색창은 안정성을 위해 5분의 시간제한이 있습니다.\n검색창이 반응하지 않는다면 다시 시도해주세요.\n또한, 타인의 검색창을 변경하거나 종료할 수 없습니다."
+                value: "검색창은 5분동안 활성화됩니다.\n시간이 지나 반응하지 않는다면 다시 시도해주세요.\n또한, 타인의 검색창은 변경하거나 종료할 수 없습니다."
             })
+            .setImage("https://cdn.discordapp.com/attachments/973929274744643595/976116742973694052/banner.png")
             .setFooter({
-                text: "뉴스 물어오는 새우",
-                iconURL: "https://cdn.discordapp.com/attachments/973929274744643595/973929352402190356/-001_5.png",
+                text: "NewShrimp",
+                iconURL: "https://cdn.discordapp.com/attachments/973929274744643595/976097698698657832/logo.png",
             });
             
     }, // getHelpEmbed
@@ -72,8 +73,9 @@ module.exports = {
         const { MessageEmbed } = require("discord.js");
 
         return new MessageEmbed()
-            .setColor("#2DB400")
+            .setColor("#12d8b5")
             .setTitle("검색을 종료합니다.")
+            .setImage("https://cdn.discordapp.com/attachments/973929274744643595/976126503555309568/bye.png")
     }, // getQuitEmbed
     
 }; // module.exports

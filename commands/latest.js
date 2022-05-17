@@ -6,16 +6,13 @@ const gsm = require("../functions/getSelectMenus.js");
 const ge = require("../functions/getEmbed.js");
 const gb = require("../functions/getButton.js");
 
-let selectedValue = 0;
-let pageNum = 0;
-
 module.exports = {
     // command area
     data: new SlashCommandBuilder()
         .setName("뉴스검색")
         .setDescription("새우가 뉴스를 검색해요")
         .addStringOption((option) => option.setName("키워드").setDescription("키워드를 입력하새우").setRequired(true)),
-
+        
     // execute 
     async execute(interaction) {
         
@@ -26,27 +23,31 @@ module.exports = {
         // error(no result matches) handling area
         if (data.total < 100) {
             const embed = await ge.getErrorEmbed(keyword);
-
+            
             await interaction.reply({ embeds: [embed] });
             await wait(4000)
             await interaction.deleteReply();
-
+            
             return;
         } // if
 
-        let row = await gsm.getSelectMenus(data, 0);    // 메뉴생성
-        const row2 = await gb.getButton();              // 버튼생성
+        // initialize numbers
+        let selectedValue = 0;
+        let pageNum = 0;
+        
+        let row = await gsm.getSelectMenus(data, 0);    // generate menus
+        const row2 = await gb.getButton();              // generate buttons
         
         // default embed area
         let embed = await ge.getEmbed(data, selectedValue, pageNum);
-
+        
         await interaction.deferReply();
-        await interaction.editReply({
-            content: ":mag: `" + keyword + "` 로 검색한 결과입니다.",
+        const message = await interaction.editReply({
+            content: ":mag: `" + keyword + "` (으)로 검색한 뉴스입니다.",
             embeds: [embed],
             components: [row, row2],
         });
-        const message = await interaction.fetchReply();
+        // const message = await interaction.fetchReply();
 
         // set filter
         const filter = (i) => {
@@ -136,7 +137,7 @@ module.exports = {
             // try {
             await interaction.deferUpdate();
             await interaction.editReply({
-                content: ":mag: `" + keyword + "` 로 검색한 결과입니다.",
+                content: ":mag: `" + keyword + "` (으)로 검색한 뉴스입니다.",
                 embeds: [embed],
                 components: [row, row2],
             });

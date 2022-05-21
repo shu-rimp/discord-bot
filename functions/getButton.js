@@ -6,12 +6,12 @@ module.exports = {
         const buttons = [
             {
                 customId: "previousPage",
-                label: "◀",
+                label: "<",
                 style: "SUCCESS",
             },
             {
                 customId: "nextPage",
-                label: "▶",
+                label: ">",
                 style: "SUCCESS",
             },
             {

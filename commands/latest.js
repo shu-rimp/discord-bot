@@ -47,7 +47,6 @@ module.exports = {
             embeds: [embed],
             components: [row, row2],
         });
-        // const message = await interaction.fetchReply();
 
         // set filter
         const filter = (i) => {
@@ -107,7 +106,6 @@ module.exports = {
                 // console.log(selectedValue);
             } // select
 
-            // try {
             if (await interaction.customId === 'quit') {
                 embed = await ge.getQuitEmbed();
                 await interaction.deferUpdate();
@@ -122,33 +120,26 @@ module.exports = {
                 
                 return;
             } // quit
-                
-            // } catch(error) {
-            //     console.error(error)
-                
-            //     collector.stop();
-            // } // try-catch : quit
 
             // get new embed&row
             embed = await ge.getEmbed(data, selectedValue, pageNum);
             row = await gsm.getSelectMenus(data, pageNum);
             
             // update message area
-            // try {
-            await interaction.deferUpdate();
-            await interaction.editReply({
-                content: ":mag: `" + keyword + "` (으)로 검색한 뉴스입니다.",
-                embeds: [embed],
-                components: [row, row2],
-            });
+            try {
+                await interaction.deferUpdate();
+                await interaction.editReply({
+                    content: ":mag: `" + keyword + "` (으)로 검색한 뉴스입니다.",
+                    embeds: [embed],
+                    components: [row, row2],
+                });
                 
-            // } catch(error) {
-
-            //     console.log(error);
-            //     await interaction.channel.send('상호작용 실패. 검색 종료 후 다시 시도해주세요');
+            } catch(error) {
+                console.log(error);
+                await interaction.channel.send('상호작용 실패. 검색 종료 후 다시 시도해주세요');
                 
-            //     await collector.stop();
-            // } // try-catch
+                await collector.stop();
+            } // try-catch
 
         }); // end of collector
             

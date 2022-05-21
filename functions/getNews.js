@@ -14,11 +14,12 @@ module.exports = {
 
             const response = await fetch(url, { headers: header });
             let data = await response.json();
-    
+
             if (response.status == 200) {
                 if (data.total_hits == 0) {
                     throw new Error("검색된 결과값이 없습니다.");
                 }
+
                 // console.log(data);
                 return data;
             } else {

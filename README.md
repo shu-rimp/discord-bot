@@ -8,6 +8,12 @@
 <hr>
   <img src="./intro/search.gif">
   <p>네이버뉴스 검색기능을 제공합니다.</p>
+  <p><a href="https://discord.com/oauth2/authorize?client_id=950075988639883324&permissions=84992&scope=applications.commands%20bot">
+    <img src="https://img.shields.io/badge/invite link-5865F2?style=plastic&logo=Discord&logoColor=white"/></a>
+    <a href="[수지] [오후 4:27] https://shurimp.tistory.com/category/DEVELOP/discord-bot">
+    <img src="https://img.shields.io/badge/blog-D4AA00?style=plastic&logo=GitBook&logoColor=white"/></a>  
+  </p>
+  
 </div>
 
 ------------------------------

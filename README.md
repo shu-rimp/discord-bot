@@ -27,8 +27,39 @@
   > <(이전페이지), >(다음페이지) 버튼으로 페이지를 이동할 수 있습니다.                         
   > X(검색종료) 버튼을 누르면 검색창을 닫을 수 있습니다. 메시지는 자동으로 삭제됩니다.
  
+ ## Installation ##
+ (봇을 이용만 할 경우 상단의 invite link를 눌러주세요.)
+ 
+ - nodejs v16.0.0 이상이 필요합니다. lts버전 설치를 권장합니다.         
+ ```
+ > nvm install lts
+ > nvm use 16.15.0 (다운받은 nodejs 버전 입력)
+ > node -v (버전 확인)
+ ```
+ 
+ - 소스코드를 다운받은 후, 해당 폴더로 경로 이동 후 discord.js를 설치합니다.
+ ```
+ > npm init -y
+ > npm install discord.js
+ ```
+ 
+ - 해당 봇은 [네이버 오픈 api](https://developers.naver.com/)를 사용합니다. 등록신청을 완료해야 사용 가능합니다.
+ - config.json 파일을 생성 후, 발급받은 봇의 토큰과 api 키를 저장합니다.
+ ```
+ {
+   "clientId" : "Your Bot's Client Id"
+   "guildId" : "Your Server's Id",
+  
+   "token" : "Your Bot's Token here",
+  
+   "Naver_Client_Id" : "Your Naver api's Client Id",
+   "Naver_Client_Secret" : "Your Naver api's Client Secret"
+}
+```
+ 
+ 
 
-## License ##
+--------------------------------------
 <div align="left"> 
   <a href="https://developers.naver.com/">Powered by NAVER OpenAPI</a><br>
   <a href="https://www.flaticon.com/free-icons/shrimp">Shrimp icons created by Freepik - Flaticon</a>
